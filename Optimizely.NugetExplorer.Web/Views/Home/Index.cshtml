@@ -1,0 +1,91 @@
+﻿@using Optimizely.NugetExplorer.Domain;
+@using Optimizely.NugetExplorer.Repository;
+
+@model List<NugetPackage>
+
+@{
+    ViewData["Title"] = "Home Page";
+    var index = 1;
+
+    NugetPackageQuery searchQuery = ViewBag.SearchQuery ?? new NugetPackageQuery();
+}
+
+<!-- https://getbootstrap.com/docs/4.3/content/tables/ -->
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-controller="Home" asp-action="Index" method="get">
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="inputCity">Name</label>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputState">Operator</label>
+                    <select id="inputState" class="form-control">
+                        <option value="=" selected>Equals</option>
+                        <option value="<">Less than</option>
+                        <option value="<=">Less than or equal</option>
+                        <option value=">">Greater than</option>
+                        <option value=">=">Greater than or equal</option>
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputZip">Value</label>
+                    <input type="text" class="form-control" id="txtName" name="Name" value="@searchQuery.Name">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="cbInternalOnly">
+                    <label class="form-check-label" for="cbInternalOnly">
+                        Internal Only
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+        </form>
+    </div>
+</div>
+
+<div class="clearfix"></div>
+<br />
+
+<div class="row">
+    <table class="table table-hover table-sm">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Version</th>
+                <th scope="col">Release Date</th>
+                <th scope="col">Net flavor</th>
+                <th scope="col">Tag</th>
+                <th scope="col">Internal</th>
+                <th scope="col">Total Download</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var nuget in Model)
+            {
+                index++;
+
+                <tr>
+                    <th scope="row">@index</th>
+                    <td>@nuget.Name</td>
+                    <td>@nuget.Version</td>
+                    <td>@nuget.ReleaseDate.ToString("dd/MM/yyyy")</td>
+                    <td>@nuget.NetFlavor.DotNetFlavorName()</td>
+                    <td>@string.Join(",", nuget.Tags)</td>
+                    <td>@nuget.InternalOnlyDisplay</td>
+                    <td>@nuget.TotalDownload</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+</div>
+
+@*<div class="text-center">
+        <h1 class="display-4">Welcome</h1>
+        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    </div>*@
